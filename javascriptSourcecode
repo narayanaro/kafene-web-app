@@ -1,0 +1,329 @@
+$(document).ready(function(){
+    var logOut = document.getElementById('logout');
+    logOut.onclick = function(){
+        alert("logout Successfully")
+        localStorage.setItem('isLogedIn',false);
+        localStorage.removeItem('userInfo');
+    }
+})
+
+
+$(document).ready(function(){
+    var form = document.getElementById('login-form');
+    form.onsubmit = function(e){
+        e.preventDefault();
+    }
+    var username = document.getElementById('username');
+    var password = document.getElementById('password');
+    var loginBtn = document.getElementById('login-btn');
+    loginBtn.onclick = function(){
+        if(username.value == password.value){
+            alert('Login Successfully');
+            localStorage.setItem('isLogedIn',true);
+            var obj = {
+                username : username.value,
+                password : password.value
+            }
+            localStorage.setItem('userInfo',JSON.stringify(obj));
+            location.assign('/orders-page.html');
+        }
+        else{
+            alert('Please enter valid credential!');
+        }
+    }
+})
+
+
+$(document).ready(function(){
+    var navItem = document.getElementsByClassName('nav-item');
+    navItem[0].classList.add('active-nav-item');
+
+    function  renderOrderRows(rowData){
+        var id = $('<td>').html(rowData.id);
+        var customer = $('<td>').html(rowData.customerName).attr('class','primary-text');
+        var time = $('<span>').html(rowData.orderTime);
+        var formatDate = rowData.orderDate.split('-');
+        var date = $('<td>').html(formatDate[0] + " " + formatDate[1] + ", " + formatDate[2] + '<br>').attr('class','primary-text');
+        date.append(time);
+        var amount = $('<td>').html("$" + rowData.amount);
+        var status = $('<td>').html(rowData.orderStatus).attr('class','primary-text');
+        var tr = $('<tr>').append(id,customer,date,amount,status);
+
+        return tr;
+    }
+
+    $.get('https://5fc1a1c9cb4d020016fe6b07.mockapi.io/api/v1/orders',function(orderData){
+        console.log(orderData)
+        for(var i = 0; i<orderData.length;i++){
+            $('#order-rows').append(renderOrderRows(orderData[i]));
+        }
+    })
+    var rowCounter = document.getElementById('row-counter');
+    var newOrder = document.getElementsByName('orders-new');
+    newOrder[0].onclick = function(){
+        var table = document.getElementById('order-rows')
+        var userRow = table.getElementsByTagName("tr");
+        for (i = 0; i < userRow.length; i++){
+            var td = userRow[i].getElementsByTagName("td")[4];
+            if (td) {
+                var tdTxtValue = td.textContent || td.innerText;
+                if (tdTxtValue.toUpperCase() == 'NEW'){
+                    if(newOrder[0].checked == true){
+                        userRow[i].style.display = "";
+                    }
+                    else{
+                        userRow[i].style.display = "none";
+                    }
+                }
+            }
+        }
+        var rowCount = 0;
+        for(j = 0;j<userRow.length; j++){
+            if(userRow[j].style.display == 'none'){
+                ;
+            }
+            else{
+                rowCount++;
+            }
+        }
+        rowCounter.innerText = "Count: " + rowCount 
+    }
+
+    var packedOrder = document.getElementsByName('orders-packed');
+    packedOrder[0].onclick = function(){
+        var table = document.getElementById('order-rows')
+        var userRow = table.getElementsByTagName("tr");
+        for (i = 0; i < userRow.length; i++){
+            var td = userRow[i].getElementsByTagName("td")[4];
+            if (td) {
+                var tdTxtValue = td.textContent || td.innerText;
+                if (tdTxtValue.toUpperCase() == 'PACKED'){
+                    if(packedOrder[0].checked == true){
+                        userRow[i].style.display = "";
+                    }
+                    else{
+                        userRow[i].style.display = "none";
+                    }
+                }
+            }
+        }
+        var rowCount = 0;
+        for(j = 0;j<userRow.length; j++){
+            if(userRow[j].style.display == 'none'){
+                ;
+            }
+            else{
+                rowCount++;
+            }
+        }
+        rowCounter.innerText = "Count: " + rowCount 
+    }
+
+    var inTransitOrder = document.getElementsByName('orders-transit');
+    inTransitOrder[0].onclick = function(){
+        var table = document.getElementById('order-rows')
+        var userRow = table.getElementsByTagName("tr");
+        for (i = 0; i < userRow.length; i++){
+            var td = userRow[i].getElementsByTagName("td")[4];
+            if (td) {
+                var tdTxtValue = td.textContent || td.innerText;
+                if (tdTxtValue.toUpperCase() == 'INTRANSIT'){
+                    if(inTransitOrder[0].checked == true){
+                        userRow[i].style.display = "";
+                    }
+                    else{
+                        userRow[i].style.display = "none";
+                    }
+                }
+            }
+        }
+        var rowCount = 0;
+        for(j = 0;j<userRow.length; j++){
+            if(userRow[j].style.display == 'none'){
+                ;
+            }
+            else{
+                rowCount++;
+            }
+        }
+        rowCounter.innerText = "Count: " + rowCount 
+    }
+    
+    var deliveredOrder = document.getElementsByName('orders-delivered');
+    deliveredOrder[0].onclick = function(){
+        var table = document.getElementById('order-rows')
+        var userRow = table.getElementsByTagName("tr");
+        for (i = 0; i < userRow.length; i++){
+            var td = userRow[i].getElementsByTagName("td")[4];
+            if (td) {
+                var tdTxtValue = td.textContent || td.innerText;
+                if (tdTxtValue.toUpperCase() == 'DELIVERED'){
+                    if(deliveredOrder[0].checked == true){
+                        userRow[i].style.display = "";
+                    }
+                    else{
+                        userRow[i].style.display = "none";
+                    }
+                }
+            }
+        }
+        var rowCount = 0;
+        for(j = 0;j<userRow.length; j++){
+            if(userRow[j].style.display == 'none'){
+                ;
+            }
+            else{
+                rowCount++;
+            }
+        }
+        rowCounter.innerText = "Count: " + rowCount 
+    }
+})
+
+
+
+$(document).ready(function(){
+    var navItem = document.getElementsByClassName('nav-item');
+    navItem[1].classList.add('active-nav-item');
+
+    function  renderProductRows(rowData){
+        var id = $('<td>').html(rowData.id);
+        var productName = $('<td>').html(rowData.medicineName).attr('class','primary-text');
+        var productBrand = $('<td>').html(rowData.medicineBrand)
+        var formatDate = rowData.expiryDate.split('-');
+        var expiryDate = $('<td>').html(formatDate[0] + " " + formatDate[1] + ", " + formatDate[2] + '<br>').attr('class','primary-text');
+        var unitPrice = $('<td>').html("$" + rowData.unitPrice);
+        var stock = $('<td>').html(rowData.stock);
+        var tr = $('<tr>').append(id,productName,productBrand,expiryDate,unitPrice,stock);
+
+        return tr;
+    }
+
+    $.get('https://5fc1a1c9cb4d020016fe6b07.mockapi.io/api/v1/products',function(productData){
+        console.log(productData)
+        for(var i = 0; i<productData.length;i++){
+            $('#product-rows').append(renderProductRows(productData[i]));
+        }
+    })
+    var rowCounter = document.getElementById('row-counter');
+    var productExpired = document.getElementsByName('product-expired');
+    productExpired[0].onclick = function(){
+        var table = document.getElementById('product-rows')
+        var userRow = table.getElementsByTagName("tr");
+        for (i = 0; i < userRow.length; i++){
+            var td = userRow[i].getElementsByTagName("td")[3];
+            var todayDate = new Date().getFullYear()
+            console.log(todayDate)
+            if (td) {
+                var tdTxtValue = td.textContent || td.innerText;
+                if (tdTxtValue.split(',')[1] < todayDate){
+                    if(productExpired[0].checked == true){
+                        userRow[i].style.display = "";
+                    }
+                    else{
+                        userRow[i].style.display = "none";
+                    }
+                }
+            }
+        }
+        var rowCount = 0;
+        for(j = 0;j<userRow.length; j++){
+            if(userRow[j].style.display == 'none'){
+                ;
+            }
+            else{
+                rowCount++;
+            }
+        }
+        rowCounter.innerText = "Count: " + rowCount 
+    }
+    
+    var productStock = document.getElementsByName('product-stock');
+    productStock[0].onclick = function(){
+        var table = document.getElementById('product-rows')
+        var userRow = table.getElementsByTagName("tr");
+        for (i = 0; i < userRow.length; i++){
+            var td = userRow[i].getElementsByTagName("td")[5];
+            if (td) {
+                var tdTxtValue = td.textContent || td.innerText;
+                if (tdTxtValue < 100){
+                    if(productStock[0].checked == true){
+                        userRow[i].style.display = "";
+                    }
+                    else{
+                        userRow[i].style.display = "none";
+                    }
+                }
+            }
+        }
+        var rowCount = 0;
+        for(j = 0;j<userRow.length; j++){
+            if(userRow[j].style.display == 'none'){
+                ;
+            }
+            else{
+                rowCount++;
+            }
+        }
+        rowCounter.innerText = "Count: " + rowCount 
+    }
+})
+
+
+
+$(document).ready(function(){
+    var navItem = document.getElementsByClassName('nav-item');
+    navItem[2].classList.add('active-nav-item');
+    
+    var searchContainer = document.getElementById('search-container');
+    searchContainer.onsubmit = function(e){
+        e.preventDefault();
+    }
+    function  renderuserRows(rowData){
+        var id = $('<td>').html(rowData.id);
+        var userimage = $('<img>').attr('src',rowData.profilePic)
+        var userAvatar = $('<td>').append(userimage)
+        var userName = $('<td>').html(rowData.fullName);
+        var formatDate = rowData.dob.split('-');
+        var dob = $('<td>').html(formatDate[0] + " " + formatDate[1] + ", " + formatDate[2] + '<br>').attr('class','primary-text');
+        var gender = $('<td>').html(rowData.gender);
+        var currentLocation = $('<td>').html(rowData.currentCity + ', ' + rowData.currentCountry);
+        var tr = $('<tr>').append(id,userAvatar,userName,dob,gender,currentLocation);
+
+        return tr;
+    }
+
+    $.get('https://5fc1a1c9cb4d020016fe6b07.mockapi.io/api/v1/users',function(userData){
+        console.log(userData)
+        for(var i = 0; i<userData.length;i++){
+            $('#user-rows').append(renderuserRows(userData[i]));
+        }
+    })
+    
+    var searchBox = document.getElementById('search-box');
+    searchBox.onkeyup = function(){
+        var filter = searchBox.value.toUpperCase();
+        var table = document.getElementById('user-rows')
+        var userRow = table.getElementsByTagName("tr");
+        for (i = 0; i < userRow.length; i++){
+            var td = userRow[i].getElementsByTagName("td")[2];
+            if (td) {
+                var tdTxtValue = td.textContent || td.innerText;
+                if (tdTxtValue.toUpperCase().indexOf(filter) > -1){
+                    userRow[i].style.display = "";
+                } 
+                else{
+                    userRow[i].style.display = "none";
+                }
+            }
+        }       
+    }
+    var resetBtn = document.getElementById('reset-btn');
+    resetBtn.onclick = function(){
+        var table = document.getElementById('user-rows')
+        var userRow = table.getElementsByTagName("tr");
+        for(var i = 0;i<userRow.length;i++){
+            userRow[i].style.display = 'table-row';
+        }
+    }
+})
